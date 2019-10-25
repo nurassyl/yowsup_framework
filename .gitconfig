@@ -1,0 +1,5 @@
+[core]
+	autocrlf = false
+	safecrlf = false
+	eol = lf
+	editor = vim

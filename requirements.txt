@@ -1,0 +1,13 @@
+setuptools==41.0.1
+wheel==0.33.4
+consonance==0.1.3-1
+python-axolotl==0.2.3
+protobuf>=3.6.0
+six==1.10
+argparse
+readline
+pillow
+tqdm
+requests
+cryptography==2.7
+yowsup==3.2.3
