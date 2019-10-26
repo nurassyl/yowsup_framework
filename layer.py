@@ -10,8 +10,11 @@ import time
 import random
 import os
 import sys
+import re
+import datetime
 import config
 
+from modules import converter
 
 class EchoLayer(YowLayer):
   def onLogin(self):
@@ -63,6 +66,33 @@ class EchoLayer(YowLayer):
   def onTextMessage(self, messageProtocolEntity):
     conversation = messageProtocolEntity.getFrom()
     message = messageProtocolEntity.getBody()
+
+    f = open('messages.log', 'a+')
+
+    f.write('Conversation: {}\n\n'.format(conversation))
+    f.write('Message:\n{}\n\n'.format(message))
+
+    a = re.findall('(Конверт|конверт):?(.*)', message)
+    b = re.findall('^(мен(і|и)?(ң|н)\s+ес(і|и)?м((і|и)?м)\s+(\w+),?\s+мен\s+(қ|к)анда(й|и)м(ы|и)?н?\??)$', message, flags=re.IGNORECASE)
+
+    if len(a) > 0:
+      # Converter
+      a = a[0][1].strip()
+      message = converter.convert(a)
+    elif len(b) > 0:
+      name = b[0][6].capitalize()
+
+      names = ['сіз өте жақсы адамсыз.', 'сіз ұрысқақсыз.', 'сіз әдемісіз.', 'сіз жамансыз.', 'сізге психолог керек.', 'сізге үйлену керек.', 'сізге махаббат жетіспейді.', 'сіз жақын арада өз махаббатыңызды табасыз.', 'сіздің көп қуатын әдетіңіз бар.', 'сіздің болашағыңыз өте үлкен.', 'сіз жақында бай адам боласыз.']
+
+      message = '{} {}\n\nТағыда өзіңіз туралы білгіңіз келсе, қайта жазыңыз.'.format(name, random.choice(names))
+    else:
+      message = '1) Кириллицадан латиницаға аудару үшін, мысалға "Конверт: Менің мәтінім." деп жазыңыз.\n\n2) Өзіңіз туралы білгіңіз келсе, мысалға "Менің есімім Нұр, мен қандаймын?" деп жазыңыз.'
+
+    f.write('Answer:\n{}\n\n'.format(message))
+    f.write('Time: {}\n\n'.format(datetime.datetime.now()))
+    f.write('-----------------------------------------------\n\n')
+
+    f.close()
 
     self.send_message(conversation, message)
 
